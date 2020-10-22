@@ -13,7 +13,7 @@ class CreateDogTable extends Migration
      */
     public function up()
     {
-        Schema::create('dogs', function (Blueprint $table) {
+        Schema::create('dog', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
             $table->string('name');
@@ -25,7 +25,7 @@ class CreateDogTable extends Migration
             $table->date('birth');
             $table->string('color');
             $table->date('chip_date');
-            $table->date('location_chip');
+            $table->string('location_chip');
 
 
         });
@@ -38,6 +38,6 @@ class CreateDogTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dogs');
+        Schema::dropIfExists('dog');
     }
 }

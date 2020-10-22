@@ -11,7 +11,13 @@
 |
 */
 
+use App\Dog;
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/dog','DogController@index');
+Route::resource('/vaccine','VaccineController');
+
 
