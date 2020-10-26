@@ -16,6 +16,7 @@ class CreateVaccineTable extends Migration
         Schema::create('vaccine', function (Blueprint $table) {
             $table->integer('vaccines_id');
             $table->integer('dog_id');
+            $table->string('name');
             $table->string('veterinary');
             $table->date('vaccination_date');
             $table->date('expiration');

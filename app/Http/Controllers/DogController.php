@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dog;
+
 use Illuminate\Http\Request;
 
 
@@ -21,7 +22,10 @@ class DogController extends Controller
 
     public function create(Request $request)
     {
-        $newDog = Dog::create($request->only(''));
+        $vaccine = new VaccineController();
+        Dog::create($request->only('user_id','name','photo','weight','size','race','sex','birth','color','chip_date','location_chip',''));
+        $vaccine->createVaccine($request->only('vaccine_id','dog_id','veterinary','vaccination_date','expiration'));
+
 
         /*$newDog = new Dog;
         $newDog->user_id = 3;
@@ -36,8 +40,6 @@ class DogController extends Controller
         $newDog->chip_date = "2020-05-5";
         $newDog->location_chip = "lomo";
         $newDog->save();*/
-
-        //inserccion en vacunas
 
     }
 
