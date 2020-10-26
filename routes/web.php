@@ -13,11 +13,15 @@
 
 use App\Dog;
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
-
+});*/
+Route::resource('dog','DogController');
 Route::get('/dog','DogController@index');
-Route::resource('/vaccine','VaccineController');
+Route::get('/dog/{id}','DogController@show');
+Route::get('/dog/create','DogController@create');
+Route::patch('/dog/{id}','DogController@update');
+Route::delete('/dog/{id}','DogController@destroy');
+
 
 
