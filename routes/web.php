@@ -12,16 +12,26 @@
 */
 
 use App\Dog;
+use App\Vaccines;
 
 /*Route::get('/', function () {
     return view('welcome');
 });*/
-Route::resource('dog','DogController');
+
+Route::get('/vaccines','VaccinesController@index'); //no funciona
+
 Route::get('/dog','DogController@index');
 Route::get('/dog/{id}','DogController@show');
 Route::get('/dog/create','DogController@create');
 Route::patch('/dog/{id}','DogController@update');
 Route::delete('/dog/{id}','DogController@destroy');
+
+
+Route::resource('vaccines','VaccinesController');
+Route::resource('dog','DogController');
+
+
+
 
 
 
