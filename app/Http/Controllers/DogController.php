@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dog;
 
+use App\Vaccines;
 use Illuminate\Http\Request;
 
 
@@ -14,6 +15,7 @@ class DogController extends Controller
     {
         $dogs = Dog::all();
        return $dogs;
+
     }
     public function show($id)
     {
@@ -23,10 +25,18 @@ class DogController extends Controller
     public function create(Request $request)
     {
         $vaccine = new VaccineController();
-        Dog::create($request->only('user_id','name','photo','weight','size','race','sex','birth','color','chip_date','location_chip',''));
-        $vaccine->createVaccine($request->only('vaccine_id','dog_id','veterinary','vaccination_date','expiration'));
 
-
+        if($namePhoto = $request->photo){
+            $name = $namePhoto->getClientOriginalName();
+            $namePhoto->move('iamges',$name);
+            Dog::create($request->only('user_id','name',$name,'weight','size','race','sex','birth','color','chip_date','location_chip',''));
+            $vaccine->createVaccine($request->only('vaccine_id','dog_id','veterinary','vaccination_date','expiration'));
+        }else {
+            $name = "Foto por defecto";
+            $namePhoto->move('iamges',$name);
+            Dog::create($request->only('user_id','name',$name,'weight','size','race','sex','birth','color','chip_date','location_chip',''));
+            $vaccine->createVaccine($request->only('vaccine_id','dog_id','veterinary','vaccination_date','expiration'));
+        }
         /*$newDog = new Dog;
         $newDog->user_id = 3;
         $newDog->name = "pancho";

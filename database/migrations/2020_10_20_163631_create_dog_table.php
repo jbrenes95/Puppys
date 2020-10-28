@@ -23,6 +23,7 @@ class CreateDogTable extends Migration
             $table->string('race');
             $table->string('sex');
             $table->date('birth');
+            $table->softDeletes();
             $table->string('color');
             $table->date('chip_date');
             $table->string('location_chip');

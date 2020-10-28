@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Dog extends Model
 {
+    use SoftDeletes;
     protected $table = 'dogs';
     public $timestamps = false;
 
