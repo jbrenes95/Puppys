@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Dog;
 
+use App\Vaccine;
 use App\Vaccines;
 use Illuminate\Http\Request;
-
+use PhpParser\Node\Expr\Cast\Object_;
+use stdClass;
 
 class DogController extends Controller
 {
+
 
     public function index()
     {
@@ -19,50 +21,114 @@ class DogController extends Controller
     }
     public function show($id)
     {
+        return Dog::where('user_id',$id)->get();
+    }
+
+    public function showDog($id)
+    {
         return Dog::find($id);
     }
 
-    public function create(Request $request)
+    public function makePhoto($photo)
     {
-        $vaccine = new VaccineController();
+        $explouded = explode(',',$photo);
+        $decode = base64_decode($explouded[1]);
 
-        if($namePhoto = $request->photo){
-            $name = $namePhoto->getClientOriginalName();
-            $namePhoto->move('iamges',$name);
-            Dog::create($request->only('user_id','name',$name,'weight','size','race','sex','birth','color','chip_date','location_chip',''));
-            $vaccine->createVaccine($request->only('vaccine_id','dog_id','veterinary','vaccination_date','expiration'));
-        }else {
-            $name = "Foto por defecto";
-            $namePhoto->move('iamges',$name);
-            Dog::create($request->only('user_id','name',$name,'weight','size','race','sex','birth','color','chip_date','location_chip',''));
-            $vaccine->createVaccine($request->only('vaccine_id','dog_id','veterinary','vaccination_date','expiration'));
+        if(str_contains($explouded[0],'jpeg')){
+            $extension = 'jpg';
+        }else{
+            $extension = 'png';
         }
-        /*$newDog = new Dog;
-        $newDog->user_id = 3;
-        $newDog->name = "pancho";
-        $newDog->photo = "dadasdasd";
-        $newDog->weight = 8;
-        $newDog->size = "grande";
-        $newDog->race = "husky";
-        $newDog->sex = "hembra";
-        $newDog->birth = "2020-05-2";
-        $newDog->color = "marron";
-        $newDog->chip_date = "2020-05-5";
-        $newDog->location_chip = "lomo";
-        $newDog->save();*/
+        $fileName = str_random().'.'.$extension;
+
+        $path = public_path().'/'.$fileName;
+        file_put_contents($path,$decode);
+        chmod($path, 0755);
+        return $fileName;
+    }
+
+
+    public function store(Request $request)
+    {
+
+        $pathbd = "/public/";
+        $defaultImage = "default.png";
+        $vaccine = new VaccineController();
+        if($request->photo){
+
+           $fileName = $this->makePhoto($request->photo);
+
+            $newDog = new Dog;
+
+            $newDog->user_id = $request->user_id;
+            $newDog->name = $request->name;
+            $newDog->photo = $pathbd.$fileName;
+            $newDog->weight = $request->weight;
+            $newDog->size = $request->size;
+            $newDog->race =$request->race;
+            $newDog->sex = $request->sex;
+            $newDog->birth = $request->birth;
+            $newDog->color = $request->color;
+            $newDog->chip_date = $request->chip_date;
+            $newDog->location_chip = $request->location_chip;
+            $newDog->save();
+            $ids = $newDog->id;
+            $vaccine->createVaccine($request->vaccine,$ids);
+
+            return"El perro se ha añadido con exito";
+        }else{
+            $newDog = new Dog;
+            $newDog->user_id = $request->user_id;
+            $newDog->name = $request->name;
+            $newDog->photo = $pathbd.$defaultImage;
+            $newDog->weight = $request->weight;
+            $newDog->size = $request->size;
+            $newDog->race =$request->race;
+            $newDog->sex = $request->sex;
+            $newDog->birth = $request->birth;
+            $newDog->color = $request->color;
+            $newDog->chip_date = $request->chip_date;
+            $newDog->location_chip = $request->location_chip;
+            $newDog->save();
+            $ids = $newDog->id;
+            $vaccine->createVaccine($request->vaccine,$ids);
+            return"El perro se ha añadido con exito sin foto";
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $pos = strpos($request->photo, "/");
+
+        if($pos === 0){
+            $newDog = Dog::findOrFail($id);
+            $newDog->update($request->all());
+
+        }else {
+            $newDog = Dog::findOrFail($id);
+            $pathbd = "/public/";
+            $fileName = $this->makePhoto($request->photo);
+
+            $newDog->user_id = $request->user_id;
+            $newDog->name = $request->name;
+            $newDog->photo = $pathbd . $fileName;
+            $newDog->weight = $request->weight;
+            $newDog->size = $request->size;
+            $newDog->race = $request->race;
+            $newDog->sex = $request->sex;
+            $newDog->birth = $request->birth;
+            $newDog->color = $request->color;
+            $newDog->chip_date = $request->chip_date;
+            $newDog->location_chip = $request->location_chip;
+            $newDog->save();
+            return "Actualizado con exito";
+        }
 
     }
 
-    public function update(Request $request, $id)//probar
+    public function destroy($id)
     {
-        $dog = Dog::findOrFail($id);
-        $newDog = $request->all();
-        $dog->update($newDog);
-
-    }
-
-    public function destroy($id)//probar
-    {
-        //Esto lo hare con el soft delete
+        Dog::find($id)->delete();
     }
 }
