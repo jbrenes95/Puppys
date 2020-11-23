@@ -11,8 +11,6 @@ class CalendarController extends Controller
     public function index()
     {
         return Calendar::all();
-
-
     }
 
 
