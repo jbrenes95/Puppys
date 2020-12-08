@@ -55,12 +55,9 @@ class DogController extends Controller
         $defaultImage = "default.png";
         $vaccine = new VaccineController();
         if($request->photo){
-
            $fileName = $this->makePhoto($request->photo);
-
             $newDog = new Dog;
-
-            $newDog->user_id = $request->user_id;
+            $newDog->user_id = $request->userId;
             $newDog->name = $request->name;
             $newDog->photo = $pathbd.$fileName;
             $newDog->weight = $request->weight;
@@ -75,10 +72,9 @@ class DogController extends Controller
             $ids = $newDog->id;
             $vaccine->createVaccine($request->vaccine,$ids);
 
-            return"El perro se ha añadido con exito";
         }else{
             $newDog = new Dog;
-            $newDog->user_id = $request->user_id;
+            $newDog->user_id = $request->userId;
             $newDog->name = $request->name;
             $newDog->photo = $pathbd.$defaultImage;
             $newDog->weight = $request->weight;
@@ -92,7 +88,6 @@ class DogController extends Controller
             $newDog->save();
             $ids = $newDog->id;
             $vaccine->createVaccine($request->vaccine,$ids);
-            return"El perro se ha añadido con exito sin foto";
         }
     }
 
@@ -110,7 +105,7 @@ class DogController extends Controller
             $pathbd = "/public/";
             $fileName = $this->makePhoto($request->photo);
 
-            $newDog->user_id = $request->user_id;
+            $newDog->user_id = $request->userId;
             $newDog->name = $request->name;
             $newDog->photo = $pathbd . $fileName;
             $newDog->weight = $request->weight;
